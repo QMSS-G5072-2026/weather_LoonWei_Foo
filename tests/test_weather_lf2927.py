@@ -2,11 +2,9 @@ import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal
 
-from weather import (
+from weather_lf2927 import (
     celsius_to_fahrenheit,
     clean_readings,
-    heat_alert,
-    run_pipeline,
     summarize_temperatures,
 )
 
