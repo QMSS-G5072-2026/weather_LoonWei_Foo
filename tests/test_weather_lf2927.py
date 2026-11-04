@@ -1,5 +1,7 @@
 import pandas as pd
 import pytest
+import weather_lf2927
+
 from pandas.testing import assert_frame_equal
 
 from weather_lf2927 import (
