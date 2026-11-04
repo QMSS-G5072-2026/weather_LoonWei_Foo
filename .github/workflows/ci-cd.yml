@@ -1,0 +1,81 @@
+name: ci-cd
+
+on:
+  push:
+    branches: [main]
+    # Pushing a version tag (e.g. v0.1.1) also publishes a release
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+
+      - name: Install the project
+        run: uv sync --locked
+
+      - name: Test with pytest
+        run: uv run pytest --cov=weather_lf2927 --cov-report=term-missing
+
+      - name: Build documentation
+        run: uv run make html --directory docs/
+
+  build:
+    needs: ci
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.3
+
+      - name: Build distributions
+        run: uv build
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    # The environment name must match the Trusted Publisher you set up on TestPyPI
+    environment:
+      name: testpypi
+    permissions:
+      # Required for Trusted Publishing: no API token is stored in the repository
+      id-token: write
+    steps:
+      # `uv publish --index testpypi` reads the index from pyproject.toml
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.3
+
+      - name: Download distributions
+        uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to TestPyPI
+        run: uv publish --index testpypi
