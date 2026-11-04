@@ -2,6 +2,9 @@
 
 MDS HW07 Task
 
+##CI Status Badge 
+[![ci-cd](https://github.com/QMSS-G5072-2026/weather_LoonWei_Foo/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/QMSS-G5072-2026/weather_LoonWei_Foo/actions/workflows/ci-cd.yml)
+
 ## Installation
 
 ```bash
