@@ -1,6 +1,6 @@
 [project]
 name = "weather_lf2927"
-version = "0.1.0"
+version = "0.1.1"
 description = "MDS HW07 Task"
 readme = "README.md"
 authors = [{ name = "Loon Wei Foo", email = "lf2927@columbia.edu" }]
